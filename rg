@@ -13,7 +13,7 @@ files() {
     if command -v git > /dev/null && git rev-parse 2> /dev/null; then
         git ls-files --cached --others --exclude-standard
     else
-        find . -name ".?*" -prune -o -type f | sed 's|^\./||'
+        find . -name ".?*" -prune -o -type f -print | sed 's|^\./||'
     fi
 }
 
