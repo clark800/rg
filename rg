@@ -2,6 +2,7 @@
 
 ALL=""
 ESC="$(printf '\033')"
+BACKSPACE="$(printf '\b')"
 MAGENTA="${ESC}[35m"
 CYAN="${ESC}[36m"
 RESET="${ESC}[0m"
@@ -35,15 +36,19 @@ search() {
 
 split() {
     # splits locations onto separate lines and colors them
+    # "A line can be split by substituting a <newline> into it. The application
+    #  shall escape the <newline> in the replacement by preceding it by a
+    #  backslash."
+    # (https://pubs.opengroup.org/onlinepubs/009695299/utilities/sed.html)
     sed "s/^[^:]*:[^:]*:/${MAGENTA}&${RESET}\\${NEWLINE}/"
 }
 
 highlight() {
     # highlights matching regions (may not work if grep flags like -i are used)
     # the first command skips location lines that are already colored
-    # uses ascii substitute as sed delimiter since it's unlikely to be in regexp
+    # uses BACKSPACE as sed delimiter since it's unlikely to be in regexp
     sed "/${ESC}\\[0m$/b
-         s$1${CYAN}&${RESET}g"
+         s${BACKSPACE}$1${BACKSPACE}${CYAN}&${RESET}${BACKSPACE}g"
 }
 
 main() {
